@@ -5,7 +5,7 @@ node_modules/
 .env
 .env.*
 cloudinary.js
-databaser.js
+database.js
 old.js
 uploadConfig.js
 viewEngine.js
