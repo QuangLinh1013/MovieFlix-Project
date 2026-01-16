@@ -4,11 +4,11 @@ node_modules/
 # Bảo mật (QUAN TRỌNG)
 .env
 .env.*
-.cloudinary.js
-.databaser.js
-.old.js
-.uploadConfig.js
-.viewEngine.js
+cloudinary.js
+databaser.js
+old.js
+uploadConfig.js
+viewEngine.js
 
 
 # Logs lỗi
