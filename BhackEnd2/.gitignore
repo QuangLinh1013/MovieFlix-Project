@@ -1,0 +1,23 @@
+# Thư viện
+node_modules/
+
+# Bảo mật (QUAN TRỌNG)
+.env
+.env.*
+.cloudinary.js
+.databaser.js
+.old.js
+.uploadConfig.js
+.viewEngine.js
+
+
+# Logs lỗi
+npm-debug.log*
+yarn-debug.log*
+logs/
+*.log
+
+# Dữ liệu người dùng upload (Avatar, Phim)
+uploads/
+public/images/
+public/videos/
