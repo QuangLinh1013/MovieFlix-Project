@@ -3,8 +3,8 @@ const jwt = require('jsonwebtoken');
 
 const requireAdmin = (req, res, next) => {
     // 👇 THÊM 2 DÒNG LOG NÀY ĐỂ BẮT LỖI
-    console.log("1. Đang kiểm tra Cookie...");
-    console.log("2. Danh sách Cookies nhận được:", req.cookies); 
+   //console.log("1. Đang kiểm tra Cookie...");
+   // console.log("2. Danh sách Cookies nhận được:", req.cookies); 
 
     const token = req.cookies.accessToken; 
     

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Xem Chung (Socket.IO)</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .box { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+        .btn { padding: 10px 20px; cursor: pointer; }
+        #logs { background: #f4f4f4; height: 200px; overflow-y: scroll; padding: 10px; border: 1px solid #999; }
+        .sv-msg { color: blue; font-weight: bold; }
+        .my-msg { color: green; }
+    </style>
+</head>
+<body>
+
+    <h2>🛠 TEST TÍNH NĂNG XEM CHUNG</h2>
+
+    <div class="box">
+        <h3>1. Vào phòng</h3>
+        <input type="text" id="roomId" placeholder="Nhập mã phòng (VD: phim1)" value="phim_avatar">
+        <button onclick="joinRoom()" class="btn">Vào phòng này</button>
+        <p>Trạng thái: <span id="status" style="color:red">Chưa kết nối</span></p>
+    </div>
+
+    <div class="box">
+        <h3>2. Giả lập Video Player</h3>
+        <p>Bấm nút bên dưới xem Tab kia có nhận được không:</p>
+        <button onclick="sendAction('play')" class="btn">▶ PLAY</button>
+        <button onclick="sendAction('pause')" class="btn">⏸ PAUSE</button>
+        <button onclick="sendAction('seek')" class="btn">⏩ TUA (đến 50s)</button>
+    </div>
+
+    <div class="box">
+        <h3>3. Nhật ký tín hiệu</h3>
+        <div id="logs"></div>
+    </div>
+
+    <script>
+        // 1. KẾT NỐI SERVER (Lưu ý đúng PORT 8888 như code backend của bạn)
+        const socket = io("http://localhost:8080");
+
+        let currentRoom = "";
+
+        // Khi kết nối thành công
+        socket.on("connect", () => {
+            document.getElementById("status").innerText = "Đã kết nối ID: " + socket.id;
+            document.getElementById("status").style.color = "green";
+            log("✅ Đã kết nối tới Server!");
+        });
+
+        // 2. HÀM GỬI LỆNH (Client -> Server)
+        function joinRoom() {
+            const room = document.getElementById("roomId").value;
+            currentRoom = room;
+            // Gửi sự kiện 'join_watch_party' khớp với backend
+            socket.emit("join_watch_party", room);
+            log(`📤 Bạn đã vào phòng: ${room}`, "my-msg");
+        }
+
+        function sendAction(action) {
+            if (!currentRoom) return alert("Vào phòng trước đã!");
+            
+            const data = {
+                roomId: currentRoom,
+                action: action,
+                time: 50 // Giả định đang ở giây thứ 50
+            };
+
+            // Gửi sự kiện 'send_action' khớp với backend
+            socket.emit("send_action", data);
+            log(`📤 Gửi lệnh: ${action}`, "my-msg");
+        }
+
+        // 3. LẮNG NGHE LỆNH (Server -> Client)
+        // Đây là tín hiệu nhận được khi NGƯỜI KHÁC bấm
+        socket.on("receive_action", (data) => {
+            log(`📩 NHẬN TỪ BẠN BÈ: Lệnh [${data.action}] - Time: ${data.time}`, "sv-msg");
+            alert(`Video đang tự động: ${data.action}`);
+        });
+
+        // Hàm hỗ trợ ghi log ra màn hình
+        function log(msg, className = "") {
+            const logs = document.getElementById("logs");
+            logs.innerHTML += `<div class="${className}">${msg}</div>`;
+            logs.scrollTop = logs.scrollHeight; // Tự cuộn xuống dưới
+        }
+    </script>
+</body>
+</html>
